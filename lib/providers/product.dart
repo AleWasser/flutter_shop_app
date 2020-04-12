@@ -22,17 +22,18 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() async {
-    final url = 'https://flutter-shop-2f5e9.firebaseio.com/products/$id.json';
+  void toggleFavoriteStatus(String token, String userId) async {
+    final url =
+        'https://flutter-shop-2f5e9.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
 
     isFavorite = !isFavorite;
     notifyListeners();
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(
+          isFavorite,
+        ),
       );
       if (response.statusCode >= 400) {
         throw HttpException('Error trying to update item.');
